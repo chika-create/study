@@ -9,6 +9,48 @@
   <!-- <link rel="stylesheet" href="style.css"> -->
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
+    console.log("hoge");
+    // curl -H 'Authorization: Bearer 28688fed6e6402e99b24f44b94c1efd7fb442ea8' 'https://qiita.com/api/v2/items';
+
+    // 投稿の取得
+    async function fetchMyQiitaPosts() {
+      const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
+      const url = "https://qiita.com/api/v2/authenticated_user/items";
+      const options = {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${TOKEN}`,
+        },
+      };
+
+      let response = await fetch(url, options);
+
+      if (response.ok) {
+        let json = await response.json();
+        let postsList = document.getElementById("qiita-posts");
+
+        for (let post of json) {
+          let listItem = document.createElement("li");
+
+          // Format the date strings
+          let createdAtDate = new Date(post.created_at);
+          let updatedAtDate = new Date(post.updated_at);
+          let formattedCreatedAt = createdAtDate.toLocaleDateString();
+          let formattedUpdatedAt = updatedAtDate.toLocaleDateString();
+
+          let textNode = document.createTextNode(
+            `${post.title} (作成日: ${formattedCreatedAt}, 更新日: ${formattedUpdatedAt})`
+          );
+
+          listItem.appendChild(textNode);
+          postsList.appendChild(listItem);
+        }
+      } else {
+        console.log("HTTP-Error: " + response.status);
+      }
+    }
+
+    fetchMyQiitaPosts();
 
   </script>
 </head>
@@ -16,6 +58,7 @@
 <body>
 
   Qiita の記事一覧を表示
+  <ul id="qiita-posts"></ul>
 
 </body>
 
