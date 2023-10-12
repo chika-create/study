@@ -28,16 +28,14 @@
         let postsList = document.getElementById("qiita-posts");
 
         for (let post of json) {
-          let createdAtDate = new Date(post.created_at);
-          let updatedAtDate = new Date(post.updated_at);
-          let formattedCreatedAt = createdAtDate.toLocaleDateString();
-          let formattedUpdatedAt = updatedAtDate.toLocaleDateString();
+          let createdAtDate = new Date(post.created_at).toLocaleDateString();
+          let updatedAtDate = new Date(post.updated_at).toLocaleDateString();
           let textNode;
 
           if (!post.private) {
             let listItem = document.createElement("li");
             textNode = document.createTextNode(
-              `${post.title} (作成日: ${formattedCreatedAt}, 更新日: ${formattedUpdatedAt})`
+              `${post.title} (作成日: ${createdAtDate}, 更新日: ${updatedAtDate})`
             );
             listItem.appendChild(textNode);
             postsList.appendChild(listItem);
