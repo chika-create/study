@@ -28,12 +28,10 @@
         let postsList = document.getElementById("qiita-posts");
 
         for (let post of json) {
-
           let createdAtDate = new Date(post.created_at);
           let updatedAtDate = new Date(post.updated_at);
           let formattedCreatedAt = createdAtDate.toLocaleDateString();
           let formattedUpdatedAt = updatedAtDate.toLocaleDateString();
-
           let textNode;
 
           if (!post.private) {
@@ -43,16 +41,12 @@
             );
             listItem.appendChild(textNode);
             postsList.appendChild(listItem);
-          } else {
-            // textNode = document.createTextNode(`hoge`);
           }
-
         }
       } else {
         console.log("HTTP-Error: " + response.status);
       }
     }
-
     fetchMyQiitaPosts();
 
   </script>
