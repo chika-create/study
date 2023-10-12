@@ -28,7 +28,6 @@
         let postsList = document.getElementById("qiita-posts");
 
         for (let post of json) {
-          let listItem = document.createElement("li");
 
           let createdAtDate = new Date(post.created_at);
           let updatedAtDate = new Date(post.updated_at);
@@ -38,15 +37,16 @@
           let textNode;
 
           if (!post.private) {
+            let listItem = document.createElement("li");
             textNode = document.createTextNode(
               `${post.title} (作成日: ${formattedCreatedAt}, 更新日: ${formattedUpdatedAt})`
             );
+            listItem.appendChild(textNode);
+            postsList.appendChild(listItem);
           } else {
-            textNode = document.createTextNode(`hoge`);
+            // textNode = document.createTextNode(`hoge`);
           }
 
-          listItem.appendChild(textNode);
-          postsList.appendChild(listItem);
         }
       } else {
         console.log("HTTP-Error: " + response.status);
