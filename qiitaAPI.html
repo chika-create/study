@@ -9,8 +9,6 @@
   <!-- <link rel="stylesheet" href="style.css"> -->
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
-    console.log("hoge");
-    // curl -H 'Authorization: Bearer 28688fed6e6402e99b24f44b94c1efd7fb442ea8' 'https://qiita.com/api/v2/items';
 
     // 投稿の取得
     async function fetchMyQiitaPosts() {
@@ -32,15 +30,20 @@
         for (let post of json) {
           let listItem = document.createElement("li");
 
-          // Format the date strings
           let createdAtDate = new Date(post.created_at);
           let updatedAtDate = new Date(post.updated_at);
           let formattedCreatedAt = createdAtDate.toLocaleDateString();
           let formattedUpdatedAt = updatedAtDate.toLocaleDateString();
 
-          let textNode = document.createTextNode(
-            `${post.title} (作成日: ${formattedCreatedAt}, 更新日: ${formattedUpdatedAt})`
-          );
+          let textNode;
+
+          if (!post.private) {
+            textNode = document.createTextNode(
+              `${post.title} (作成日: ${formattedCreatedAt}, 更新日: ${formattedUpdatedAt})`
+            );
+          } else {
+            textNode = document.createTextNode(`hoge`);
+          }
 
           listItem.appendChild(textNode);
           postsList.appendChild(listItem);
