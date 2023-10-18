@@ -54,8 +54,8 @@
           displayPosts(json);
         });
 
-        // ストック数が多い順でソート
-        document.getElementById("sortBtn--descendingStock").addEventListener("click", () => {
+        // いいね数が多い順でソート
+        document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
           json.sort((a, b) => b.likes_count - a.likes_count);
           displayPosts(json);
         });
@@ -74,7 +74,7 @@
   <ul id="qiita-posts"></ul>
   <ul id="sortBtn">
     <li id="sortBtn--newPostDate">投稿日が新しい順</li>
-    <li id="sortBtn--descendingStock">ストック数が多い順</li>
+    <li id="sortBtn--descendingLikes">いいね数が多い順</li>
   </ul>
 </body>
 
