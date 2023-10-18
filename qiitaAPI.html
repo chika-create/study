@@ -27,20 +27,38 @@
         let json = await response.json();
         let postsList = document.getElementById("qiita-posts");
 
-        for (let post of json) {
-          let createdAtDate = new Date(post.created_at).toLocaleDateString();
-          let updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-          let textNode;
+        function displayPosts(posts) {
+          postsList.innerHTML = ""; // 既存の記事をクリア
 
-          if (!post.private) {
-            let listItem = document.createElement("li");
-            textNode = document.createTextNode(
-              `${post.title} (作成日: ${createdAtDate}, 更新日: ${updatedAtDate})`
-            );
-            listItem.appendChild(textNode);
-            postsList.appendChild(listItem);
+          for (let post of posts) {
+            let createdAtDate = new Date(post.created_at).toLocaleDateString();
+            let updatedAtDate = new Date(post.updated_at).toLocaleDateString();
+            let textNode;
+
+            if (!post.private) {
+              let listItem = document.createElement("li");
+              textNode = document.createTextNode(
+                `${post.title} (作成日: ${createdAtDate}, 更新日: ${updatedAtDate})`
+              );
+              listItem.appendChild(textNode);
+              postsList.appendChild(listItem);
+            }
           }
         }
+
+        displayPosts(json);
+
+        // 投稿日が新しい順でソート
+        document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
+          json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          displayPosts(json);
+        });
+
+        // ストック数が多い順でソート
+        document.getElementById("sortBtn--descendingStock").addEventListener("click", () => {
+          json.sort((a, b) => b.likes_count - a.likes_count);
+          displayPosts(json);
+        });
       } else {
         console.log("HTTP-Error: " + response.status);
       }
@@ -54,11 +72,10 @@
 
   Qiita の記事一覧を表示
   <ul id="qiita-posts"></ul>
-  <ul>
-    <li>投稿日が新しい順</li>
-    <li>ストック数が多い順</li>
+  <ul id="sortBtn">
+    <li id="sortBtn--newPostDate">投稿日が新しい順</li>
+    <li id="sortBtn--descendingStock">ストック数が多い順</li>
   </ul>
-
 </body>
 
 </html>
