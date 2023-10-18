@@ -21,23 +21,22 @@
         },
       };
 
-      let response = await fetch(url, options);
+      const response = await fetch(url, options);
 
       if (response.ok) {
-        let json = await response.json();
-        let postsList = document.getElementById("qiita-posts");
+        const json = await response.json();
+        const postsList = document.getElementById("qiita-posts");
 
         function displayPosts(posts) {
           postsList.innerHTML = ""; // 既存の記事をクリア
 
-          for (let post of posts) {
-            let createdAtDate = new Date(post.created_at).toLocaleDateString();
-            let updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-            let textNode;
+          for (const post of posts) {
+            const createdAtDate = new Date(post.created_at).toLocaleDateString();
+            const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
 
             if (!post.private) {
-              let listItem = document.createElement("li");
-              textNode = document.createTextNode(
+              const listItem = document.createElement("li");
+              const textNode = document.createTextNode(
                 `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
               );
               listItem.appendChild(textNode);
