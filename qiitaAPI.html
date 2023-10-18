@@ -38,7 +38,7 @@
             if (!post.private) {
               let listItem = document.createElement("li");
               textNode = document.createTextNode(
-                `${post.title} (作成日: ${createdAtDate}, 更新日: ${updatedAtDate})`
+                `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
               );
               listItem.appendChild(textNode);
               postsList.appendChild(listItem);
