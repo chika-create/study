@@ -1,80 +1,92 @@
 <!DOCTYPE html>
 <html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>Qiita API を使って記事を取得</title>
+    <!-- <meta name="description" content="ディスクリプションを入力"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- <script src="main.js"></script> -->
+    <script type="text/javascript">
+      window.onload = function () {
+        const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
+        const url = "https://qiita.com/api/v2/authenticated_user/items";
 
-<head>
-  <meta charset="utf-8">
-  <title>Qiita API を使って記事を取得</title>
-  <!-- <meta name="description" content="ディスクリプションを入力"> -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="stylesheet" href="style.css"> -->
-  <!-- <script src="main.js"></script> -->
-  <script type="text/javascript">
+        let data = [];
 
-    // 投稿の取得
-    async function fetchMyQiitaPosts() {
-      const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
-      const url = "https://qiita.com/api/v2/authenticated_user/items";
-      const options = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
-      };
-
-      const response = await fetch(url, options);
-
-      if (response.ok) {
-        const json = await response.json();
-        const postsList = document.getElementById("qiita-posts");
-
-        function displayPosts(posts) {
-          postsList.innerHTML = ""; // 既存の記事をクリア
-
-          for (const post of posts) {
-            const createdAtDate = new Date(post.created_at).toLocaleDateString();
-            const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-
-            if (!post.private) {
-              const listItem = document.createElement("li");
-              const textNode = document.createTextNode(
-                `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
-              );
-              listItem.appendChild(textNode);
-              postsList.appendChild(listItem);
+        // 投稿の取得
+        const fetchMyQiitaPosts = (async () => {
+          const options = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+            },
+          };
+          try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
             }
+            data = await response.json();
+            displayPosts(data);
+          } catch (error) {
+            console.error("Error fetching data:", error);
           }
-        }
+        })();
 
-        displayPosts(json);
+        const stringDate = (date) => new Date(date).toLocaleDateString();
 
-        // 投稿日が新しい順でソート
-        document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
-          json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          displayPosts(json);
-        });
+        const createItem = (title, dates, likes_count) => {
+          const listItem = document.createElement("li");
+          const textNode = document.createTextNode(
+            `${title} (投稿日: ${dates.createdAtDate}, 更新日: ${dates.updatedAtDate} - いいね数： ${likes_count})`
+          );
+          listItem.appendChild(textNode);
+          return listItem;
+        };
 
-        // いいね数が多い順でソート
-        document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
-          json.sort((a, b) => b.likes_count - a.likes_count);
-          displayPosts(json);
-        });
-      } else {
-        console.log("HTTP-Error: " + response.status);
-      }
-    }
-    fetchMyQiitaPosts();
+        const displayPosts = (data) => {
+          const postsList = document.getElementById("qiita-posts");
+          const posts = data;
+          postsList.innerHTML = "";
 
-  </script>
-</head>
+          const filteredPosts = posts.filter((post) => !post.private);
+          filteredPosts.forEach((post) => {
+            const dates = {
+              createdAtDate: stringDate(post.created_at),
+              updatedAtDate: stringDate(post.updated_at),
+            };
+            postsList.appendChild(
+              createItem(post.title, dates, post.likes_count)
+            );
+          });
+        };
 
-<body>
+        document
+          .getElementById("sortBtn--newPostDate")
+          .addEventListener("click", () => {
+            const sortData = data.sort(
+              (a, b) => new Date(b.created_at) - new Date(a.created_at)
+            );
+            displayPosts(sortData);
+          });
 
-  Qiita の記事一覧を表示
-  <ul id="qiita-posts"></ul>
-  <ul id="sortBtn">
-    <li id="sortBtn--newPostDate">投稿日が新しい順</li>
-    <li id="sortBtn--descendingLikes">いいね数が多い順</li>
-  </ul>
-</body>
+        document
+          .getElementById("sortBtn--descendingLikes")
+          .addEventListener("click", () => {
+            const sortData = data.sort((a, b) => b.likes_count - a.likes_count);
+            displayPosts(sortData);
+          });
+      };
+    </script>
+  </head>
 
+  <body>
+    Qiita の記事一覧を表示
+    <ul id="qiita-posts"></ul>
+    <ul id="sortBtn">
+      <li id="sortBtn--newPostDate">投稿日が新しい順</li>
+      <li id="sortBtn--descendingLikes">いいね数が多い順</li>
+    </ul>
+  </body>
 </html>
