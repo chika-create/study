@@ -23,7 +23,9 @@
 
       try {
         const response = await fetch(url, options);
-        if (response.ok) {
+        if (!response.ok) {
+          throw new Error("response is false. response.status: ", response.status);
+        } else {
           const json = await response.json();
           const postsList = document.getElementById("qiita-posts");
 
@@ -58,11 +60,9 @@
             json.sort((a, b) => b.likes_count - a.likes_count);
             displayPosts(json);
           });
-        } else {
-          console.log("HTTP-Error: " + response.status);
         }
       } catch (error) {
-        console.log("error");
+        console.log("error: ", error);
       };
     }
     fetchMyQiitaPosts();
