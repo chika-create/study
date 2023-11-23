@@ -37,13 +37,15 @@
       };
     }
 
+    const stringDate = (date) => new Date(date).toLocaleDateString();
+
     function displayPosts(posts) {
       postsList = document.getElementById("qiita-posts");
       postsList.innerHTML = ""; // 既存の記事をクリア
 
       for (const post of posts) {
-        const createdAtDate = new Date(post.created_at).toLocaleDateString();
-        const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
+        const createdAtDate = stringDate(post.created_at);
+        const updatedAtDate = stringDate(post.updated_at);
 
         if (!post.private) {
           const listItem = document.createElement("li");
