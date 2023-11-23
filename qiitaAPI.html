@@ -10,12 +10,12 @@
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
   window.onload = function () {
+    const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
+    const url = "https://qiita.com/api/v2/authenticated_user/items";
     let postsList;
 
     // 投稿の取得
     const fetchMyQiitaPosts = async() => {
-      const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
-      const url = "https://qiita.com/api/v2/authenticated_user/items";
       const options = {
         method: "GET",
         headers: {
@@ -29,7 +29,6 @@
           throw new Error("response is false. response.status: ", response.status);
         } else {
           const json = await response.json();
-          postsList = document.getElementById("qiita-posts");
           displayPosts(json);
 
           // 投稿日が新しい順でソート
@@ -50,6 +49,7 @@
     }
 
     function displayPosts(posts) {
+      postsList = document.getElementById("qiita-posts");
       postsList.innerHTML = ""; // 既存の記事をクリア
 
       for (const post of posts) {
