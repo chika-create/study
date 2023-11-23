@@ -10,6 +10,8 @@
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
   window.onload = function () {
+    let postsList;
+
     // 投稿の取得
     const fetchMyQiitaPosts = async() => {
       const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
@@ -27,26 +29,7 @@
           throw new Error("response is false. response.status: ", response.status);
         } else {
           const json = await response.json();
-          const postsList = document.getElementById("qiita-posts");
-
-          function displayPosts(posts) {
-            postsList.innerHTML = ""; // 既存の記事をクリア
-
-            for (const post of posts) {
-              const createdAtDate = new Date(post.created_at).toLocaleDateString();
-              const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-
-              if (!post.private) {
-                const listItem = document.createElement("li");
-                const textNode = document.createTextNode(
-                  `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
-                );
-                listItem.appendChild(textNode);
-                postsList.appendChild(listItem);
-              }
-            }
-          }
-
+          postsList = document.getElementById("qiita-posts");
           displayPosts(json);
 
           // 投稿日が新しい順でソート
@@ -65,6 +48,25 @@
         console.log("error: ", error);
       };
     }
+
+    function displayPosts(posts) {
+      postsList.innerHTML = ""; // 既存の記事をクリア
+
+      for (const post of posts) {
+        const createdAtDate = new Date(post.created_at).toLocaleDateString();
+        const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
+
+        if (!post.private) {
+          const listItem = document.createElement("li");
+          const textNode = document.createTextNode(
+            `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
+          );
+          listItem.appendChild(textNode);
+          postsList.appendChild(listItem);
+        }
+      }
+    }
+
     fetchMyQiitaPosts();
   }
   </script>
