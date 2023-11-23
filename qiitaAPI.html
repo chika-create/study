@@ -10,9 +10,8 @@
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
   window.onload = function () {
-
     // 投稿の取得
-    async function fetchMyQiitaPosts() {
+    const fetchMyQiitaPosts = async() => {
       const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
       const url = "https://qiita.com/api/v2/authenticated_user/items";
       const options = {
@@ -22,46 +21,49 @@
         },
       };
 
-      const response = await fetch(url, options);
+      try {
+        const response = await fetch(url, options);
+        if (response.ok) {
+          const json = await response.json();
+          const postsList = document.getElementById("qiita-posts");
 
-      if (response.ok) {
-        const json = await response.json();
-        const postsList = document.getElementById("qiita-posts");
+          function displayPosts(posts) {
+            postsList.innerHTML = ""; // 既存の記事をクリア
 
-        function displayPosts(posts) {
-          postsList.innerHTML = ""; // 既存の記事をクリア
+            for (const post of posts) {
+              const createdAtDate = new Date(post.created_at).toLocaleDateString();
+              const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
 
-          for (const post of posts) {
-            const createdAtDate = new Date(post.created_at).toLocaleDateString();
-            const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-
-            if (!post.private) {
-              const listItem = document.createElement("li");
-              const textNode = document.createTextNode(
-                `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
-              );
-              listItem.appendChild(textNode);
-              postsList.appendChild(listItem);
+              if (!post.private) {
+                const listItem = document.createElement("li");
+                const textNode = document.createTextNode(
+                  `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
+                );
+                listItem.appendChild(textNode);
+                postsList.appendChild(listItem);
+              }
             }
           }
+
+          displayPosts(json);
+
+          // 投稿日が新しい順でソート
+          document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
+            json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            displayPosts(json);
+          });
+
+          // いいね数が多い順でソート
+          document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
+            json.sort((a, b) => b.likes_count - a.likes_count);
+            displayPosts(json);
+          });
+        } else {
+          console.log("HTTP-Error: " + response.status);
         }
-
-        displayPosts(json);
-
-        // 投稿日が新しい順でソート
-        document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
-          json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          displayPosts(json);
-        });
-
-        // いいね数が多い順でソート
-        document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
-          json.sort((a, b) => b.likes_count - a.likes_count);
-          displayPosts(json);
-        });
-      } else {
-        console.log("HTTP-Error: " + response.status);
-      }
+      } catch (error) {
+        console.log("error");
+      };
     }
     fetchMyQiitaPosts();
   }
