@@ -13,6 +13,7 @@
     const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
     const url = "https://qiita.com/api/v2/authenticated_user/items";
     let postsList;
+    let json;
 
     // 投稿の取得
     const fetchMyQiitaPosts = async() => {
@@ -28,20 +29,8 @@
         if (!response.ok) {
           throw new Error("response is false. response.status: ", response.status);
         } else {
-          const json = await response.json();
+          json = await response.json();
           displayPosts(json);
-
-          // 投稿日が新しい順でソート
-          document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
-            json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            displayPosts(json);
-          });
-
-          // いいね数が多い順でソート
-          document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
-            json.sort((a, b) => b.likes_count - a.likes_count);
-            displayPosts(json);
-          });
         }
       } catch (error) {
         console.log("error: ", error);
@@ -66,6 +55,18 @@
         }
       }
     }
+
+    // 投稿日が新しい順でソート
+    document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
+      json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      displayPosts(json);
+    });
+
+    // いいね数が多い順でソート
+    document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
+      json.sort((a, b) => b.likes_count - a.likes_count);
+      displayPosts(json);
+    });
 
     fetchMyQiitaPosts();
   }
