@@ -41,7 +41,7 @@
       let listItem;
       let textNod
 
-      function createItem() {
+      function createItem(post, createdAtDate, updatedAtDate) {
         listItem = document.createElement("li");
         textNode = document.createTextNode(
           `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
@@ -59,12 +59,7 @@
           const updatedAtDate = stringDate(post.updated_at);
 
           if (!post.private) {
-            listItem = document.createElement("li");
-            textNode = document.createTextNode(
-              `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
-            );
-            listItem.appendChild(textNode);
-            postsList.appendChild(listItem);
+            createItem(post, createdAtDate, updatedAtDate);
           }
         }
       }
