@@ -39,16 +39,16 @@
 
       const stringDate = (date) => new Date(date).toLocaleDateString();
       let listItem;
-      let textNod
+      let textNode;
 
-      function createItem(post, createdAtDate, updatedAtDate) {
-        listItem = document.createElement("li");
-        textNode = document.createTextNode(
+      const createItem = (post, createdAtDate, updatedAtDate) => {
+        const listItem = document.createElement("li");
+        const textNode = document.createTextNode(
           `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
         );
         listItem.appendChild(textNode);
-        postsList.appendChild(listItem);
-      }
+        return listItem;
+      };
 
       function displayPosts(posts) {
         postsList = document.getElementById("qiita-posts");
@@ -59,7 +59,8 @@
           const updatedAtDate = stringDate(post.updated_at);
 
           if (!post.private) {
-            createItem(post, createdAtDate, updatedAtDate);
+            const newItem = createItem(post, createdAtDate, updatedAtDate);
+            postsList.appendChild(newItem);
           }
         }
       }
