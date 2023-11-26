@@ -54,7 +54,9 @@
         postsList = document.getElementById("qiita-posts");
         postsList.innerHTML = ""; // 既存の記事をクリア
 
-        for (const post of posts) {
+        const filteredPosts = posts.filter(post => !post.private);
+
+        filteredPosts.forEach(post => {
           const createdAtDate = stringDate(post.created_at);
           const updatedAtDate = stringDate(post.updated_at);
 
@@ -62,7 +64,7 @@
             const newItem = createItem(post, createdAtDate, updatedAtDate);
             postsList.appendChild(newItem);
           }
-        }
+        });
       }
 
       // 投稿日が新しい順でソート
