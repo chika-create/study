@@ -38,10 +38,10 @@
 
       const stringDate = (date) => new Date(date).toLocaleDateString();
 
-      const createItem = (post, createdAtDate, updatedAtDate) => {
+      const createItem = (postDates) => {
         const listItem = document.createElement("li");
         const textNode = document.createTextNode(
-          `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
+          `${postDates.title} (投稿日: ${postDates.createdAtDate}, 更新日: ${postDates.updatedAtDate} - いいね数： ${postDates.likes_count})`
         );
         listItem.appendChild(textNode);
         return listItem;
@@ -49,18 +49,19 @@
 
       const displayPosts = (posts) => {
         const postsList = document.getElementById("qiita-posts");
-        postsList.innerHTML = ""; // 既存の記事をクリア
+        postsList.innerHTML = "";
 
         const filteredPosts = posts.filter(post => !post.private);
 
         filteredPosts.forEach(post => {
-          const createdAtDate = stringDate(post.created_at);
-          const updatedAtDate = stringDate(post.updated_at);
-
-          if (!post.private) {
-            const newItem = createItem(post, createdAtDate, updatedAtDate);
-            postsList.appendChild(newItem);
+          const postDates = {
+            title: post.title,
+            createdAtDate: stringDate(post.created_at),
+            updatedAtDate: stringDate(post.updated_at),
+            likesCount: post.likes_count,
           }
+          const newItem = createItem(post, postDates);
+          postsList.appendChild(newItem);
         });
       }
 
