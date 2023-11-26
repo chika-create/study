@@ -15,7 +15,7 @@
       let data = [];
 
       // 投稿の取得
-      const fetchMyQiitaPosts = async () => {
+      const fetchMyQiitaPosts = (async () => {
         const options = {
           method: "GET",
           headers: {
@@ -34,7 +34,7 @@
         } catch (error) {
           console.log("error: ", error);
         };
-      }
+      })();
 
       const stringDate = (date) => new Date(date).toLocaleDateString();
 
@@ -76,8 +76,6 @@
         const sortData = data.sort((a, b) => b.likes_count - a.likes_count);
         displayPosts(sortData);
       });
-
-      fetchMyQiitaPosts();
     }
   </script>
 </head>
