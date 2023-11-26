@@ -12,7 +12,6 @@
     window.onload = function () {
       const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
       const url = "https://qiita.com/api/v2/authenticated_user/items";
-      let postsList;
       let json;
 
       // 投稿の取得
@@ -38,8 +37,6 @@
       }
 
       const stringDate = (date) => new Date(date).toLocaleDateString();
-      let listItem;
-      let textNode;
 
       const createItem = (post, createdAtDate, updatedAtDate) => {
         const listItem = document.createElement("li");
@@ -51,7 +48,7 @@
       };
 
       const displayPosts = (posts) => {
-        postsList = document.getElementById("qiita-posts");
+        const postsList = document.getElementById("qiita-posts");
         postsList.innerHTML = ""; // 既存の記事をクリア
 
         const filteredPosts = posts.filter(post => !post.private);
