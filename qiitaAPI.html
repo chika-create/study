@@ -9,61 +9,74 @@
   <!-- <link rel="stylesheet" href="style.css"> -->
   <!-- <script src="main.js"></script> -->
   <script type="text/javascript">
-
-    // 投稿の取得
-    async function fetchMyQiitaPosts() {
+    window.onload = function () {
       const TOKEN = "28688fed6e6402e99b24f44b94c1efd7fb442ea8";
       const url = "https://qiita.com/api/v2/authenticated_user/items";
-      const options = {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-        },
+      let data = [];
+
+      // 投稿の取得
+      const fetchMyQiitaPosts = (async () => {
+        const options = {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        };
+
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            throw new Error("response is false. response.status: ", response.status);
+          } else {
+            data = await response.json();
+            displayPosts(data);
+          }
+        } catch (error) {
+          console.log("error: ", error);
+        };
+      })();
+
+      const stringDate = (date) => new Date(date).toLocaleDateString();
+
+      const createItem = (postDates) => {
+        const listItem = document.createElement("li");
+        const textNode = document.createTextNode(
+          `${postDates.title} (投稿日: ${postDates.createdAtDate}, 更新日: ${postDates.updatedAtDate} - いいね数： ${postDates.likes_count})`
+        );
+        listItem.appendChild(textNode);
+        return listItem;
       };
 
-      const response = await fetch(url, options);
-
-      if (response.ok) {
-        const json = await response.json();
+      const displayPosts = (posts) => {
         const postsList = document.getElementById("qiita-posts");
+        postsList.innerHTML = "";
 
-        function displayPosts(posts) {
-          postsList.innerHTML = ""; // 既存の記事をクリア
+        const filteredPosts = posts.filter(post => !post.private);
 
-          for (const post of posts) {
-            const createdAtDate = new Date(post.created_at).toLocaleDateString();
-            const updatedAtDate = new Date(post.updated_at).toLocaleDateString();
-
-            if (!post.private) {
-              const listItem = document.createElement("li");
-              const textNode = document.createTextNode(
-                `${post.title} (投稿日: ${createdAtDate}, 更新日: ${updatedAtDate} - いいね数： ${post.likes_count})`
-              );
-              listItem.appendChild(textNode);
-              postsList.appendChild(listItem);
-            }
+        filteredPosts.forEach(post => {
+          const postDates = {
+            title: post.title,
+            createdAtDate: stringDate(post.created_at),
+            updatedAtDate: stringDate(post.updated_at),
+            likesCount: post.likes_count,
           }
-        }
-
-        displayPosts(json);
-
-        // 投稿日が新しい順でソート
-        document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
-          json.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          displayPosts(json);
+          const newItem = createItem(post, postDates);
+          postsList.appendChild(newItem);
         });
-
-        // いいね数が多い順でソート
-        document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
-          json.sort((a, b) => b.likes_count - a.likes_count);
-          displayPosts(json);
-        });
-      } else {
-        console.log("HTTP-Error: " + response.status);
       }
-    }
-    fetchMyQiitaPosts();
 
+      // 投稿日が新しい順でソート
+      document.getElementById("sortBtn--newPostDate").addEventListener("click", () => {
+        const sortData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        displayPosts(sortData);
+      });
+
+      // いいね数が多い順でソート
+      document.getElementById("sortBtn--descendingLikes").addEventListener("click", () => {
+        const sortData = data.sort((a, b) => b.likes_count - a.likes_count);
+        displayPosts(sortData);
+      });
+    }
   </script>
 </head>
 
